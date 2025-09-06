@@ -16,8 +16,10 @@ export const goodsFromServer = [
   'Garlic',
 ];
 
+type SortType = '' | 'sortABC' | 'sortLength';
+
 export const App: React.FC = () => {
-  const [sortField, setSortField] = useState<string>('');
+  const [sortField, setSortField] = useState<SortType>('');
   const [reversed, setReversed] = useState<boolean>(false);
   const SORT_ABC = 'sortABC';
   const SORT_LENGTH = 'sortLength';
