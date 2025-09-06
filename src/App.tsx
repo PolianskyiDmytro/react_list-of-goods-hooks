@@ -39,7 +39,7 @@ export const App: React.FC = () => {
     visibleGoods = visibleGoods.reverse();
   }
 
-  const reset = () => {
+  const handleReset = () => {
     setSortField('');
     setReversed(false);
   };
@@ -74,7 +74,7 @@ export const App: React.FC = () => {
           <button
             type="button"
             className="button is-danger is-light"
-            onClick={reset}
+            onClick={handleReset}
           >
             Reset
           </button>
