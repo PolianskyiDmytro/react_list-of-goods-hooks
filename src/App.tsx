@@ -1,4 +1,5 @@
-import React from 'react';
+import * as React from 'react';
+import { useState } from 'react';
 import 'bulma/css/bulma.css';
 import './App.scss';
 
@@ -16,36 +17,75 @@ export const goodsFromServer = [
 ];
 
 export const App: React.FC = () => {
+  const [sortField, setSortField] = useState<string>('');
+  const [reversed, setReversed] = useState<boolean>(false);
+  const SORT_ABC = 'sortABC';
+  const SORT_LENGTH = 'sortLength';
+  let visibleGoods = [...goodsFromServer].sort((good1, good2) => {
+    switch (sortField) {
+      case SORT_ABC:
+        return good1.localeCompare(good2);
+      case SORT_LENGTH:
+        return good1.length - good2.length;
+      default:
+        return 0;
+    }
+  });
+
+  if (reversed) {
+    visibleGoods = visibleGoods.reverse();
+  }
+
+  const reset = () => {
+    setSortField('');
+    setReversed(false);
+  };
+
   return (
     <div className="section content">
       <div className="buttons">
-        <button type="button" className="button is-info is-light">
+        <button
+          type="button"
+          className={`button is-info ${sortField === SORT_ABC ? '' : 'is-light'}`}
+          onClick={() => setSortField(SORT_ABC)}
+        >
           Sort alphabetically
         </button>
-
-        <button type="button" className="button is-success is-light">
+        <button
+          type="button"
+          className={`button is-success ${sortField === SORT_LENGTH ? '' : 'is-light'}`}
+          onClick={() => setSortField(SORT_LENGTH)}
+        >
           Sort by length
         </button>
-
-        <button type="button" className="button is-warning is-light">
+        <button
+          type="button"
+          className={`button is-warning ${reversed ? '' : 'is-light'}`}
+          onClick={() => {
+            setReversed(prev => !prev);
+          }}
+        >
           Reverse
         </button>
-
-        <button type="button" className="button is-danger is-light">
-          Reset
-        </button>
+        {visibleGoods.some((item, i) => item !== goodsFromServer[i]) && (
+          <button
+            type="button"
+            className="button is-danger is-light"
+            onClick={reset}
+          >
+            Reset
+          </button>
+        )}
       </div>
 
       <ul>
-        <ul>
-          <li data-cy="Good">Dumplings</li>
-          <li data-cy="Good">Carrot</li>
-          <li data-cy="Good">Eggs</li>
-          <li data-cy="Good">Ice cream</li>
-          <li data-cy="Good">Apple</li>
-          <li data-cy="Good">...</li>
-        </ul>
+        {visibleGoods.map(good => (
+          <li key={good} data-cy="Good">
+            {good}
+          </li>
+        ))}
       </ul>
     </div>
   );
 };
+
